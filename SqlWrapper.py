@@ -342,7 +342,7 @@ class SqlWrapper:
     @staticmethod
     @unpack_tuple_argument
     def get_list_direct(query, *params):
-        # type: (str, SqlParameter) -> list[ExpandoObject]
+        # type: (str, Scripting.ISqlParameter) -> list[ExpandoObject]
         """Wraps SqlHelper.GetList with validation and tracing, skips cache."""
         if not SqlWrapper.is_valid(query, *params):
             return []
@@ -364,3 +364,4 @@ def add_top_1(query):
     if match is None:
         return query
     return "{}TOP 1 {}".format(match.group(1), match.group(2))
+
