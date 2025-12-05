@@ -1,4 +1,7 @@
 import _functools
+# import functools is not allowed in CPQ
+# _functools is allowed, but doesn't contain wraps
+# below is copied from functools module
 
 WRAPPER_ASSIGNMENTS = ('__module__', '__name__', '__qualname__', '__doc__',
                        '__annotations__')
@@ -46,3 +49,4 @@ def wraps(wrapped,
     """
     return _functools.partial(update_wrapper, wrapped=wrapped,
                    assigned=assigned, updated=updated)
+
