@@ -1,6 +1,7 @@
 import re
 import Scripting
 import System
+import Decorators
 
 class DbType:
     """Database table column data type enum"""
@@ -80,7 +81,7 @@ class DatabaseCache(Cache):
         return item["value"]
 
     def _is_valid(self, key):
-        return not self.has_expired(self._cache[key]['date'])
+        return not self.has_expired(self._cache[key]["date"])
 
     def _remove_invalid(self):
         if not self.__history:
@@ -123,6 +124,7 @@ def unpack_tuple_argument(func):
         - option 1: _func( arg1, arg2, arg3)
         - option 2: _func((arg1, arg2, arg3))
     """
+    @Decorators.wraps(func)
     def wrapper(query, *params):
         if len(params) == 1 and isinstance(params[0], tuple):
             params = params[0]
@@ -279,7 +281,7 @@ class SqlWrapper:
             result = list(SqlHelper.GetList(query, *params))
             SqlWrapper.list_cache[key] = result
 
-        SqlWrapper.trace_result(result, query, message=message, *params)
+        SqlWrapper.trace_result(result, query, message, *params)
         return result
 
     @staticmethod
@@ -304,11 +306,11 @@ class SqlWrapper:
             result = SqlHelper.GetFirst(query, *params)
             SqlWrapper.first_cache[key] = result
 
-        SqlWrapper.trace_result(result, query, message=message, *params)
+        SqlWrapper.trace_result(result, query, message, *params)
         return result
 
     @staticmethod
-    def trace_result(result, query, message="", *params):
+    def trace_result(result, query, message, *params):
         """Trace the lookup query, parameters and result."""
         if not Trace.IsOn:
             return
@@ -322,7 +324,7 @@ class SqlWrapper:
             query: '{}'
             params: {}
             result: {}
-        """.format(description, query, SqlWrapper.serialize(params), JsonHelper.Serialize(result)))
+        """.format(description, query, SqlWrapper.serialize(*params), JsonHelper.Serialize(result)))
 
     @staticmethod
     @unpack_tuple_argument
@@ -334,7 +336,7 @@ class SqlWrapper:
 
         query = add_top_1(query)
         result = SqlHelper.GetFirst(query, *params)
-        SqlWrapper.trace_result(result, query, *params)
+        SqlWrapper.trace_result(result, query, "", *params)
         return result
 
     @staticmethod
@@ -346,7 +348,7 @@ class SqlWrapper:
             return []
 
         result = list(SqlHelper.GetList(query, *params))
-        SqlWrapper.trace_result(result, query, *params)
+        SqlWrapper.trace_result(result, query, "", *params)
         return result
 
 def add_top_1(query):
