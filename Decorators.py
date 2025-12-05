@@ -50,3 +50,4 @@ def wraps(wrapped,
     return _functools.partial(update_wrapper, wrapped=wrapped,
                    assigned=assigned, updated=updated)
 
+
