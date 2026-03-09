@@ -187,7 +187,8 @@ class KeyValidator:
 
     This validator triggers on both initialization or change.
 
-    Usage example:
+	Example:
+    .. code-block:: python 
 
         class Content(ModeledMapping):
             Id = 0
