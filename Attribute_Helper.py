@@ -4,6 +4,24 @@ import Sql_Wrapper
 
 
 class AttributeHelper:
+    """Helper for accessing product attributes.
+
+    Defaults and early returns allow writing more generic code,
+    without having to check every time for existing attributes, non empty values, etc.
+
+    Example:
+    .. code-block:: python 
+        # standard
+        ModelAttr = Product.Attributes.GetByName('Model Number')
+        Model = ModelAttr.SelectedValue.ValueCode if ModelAttr and ModelAttr.SelectedValue else ''
+        BoxSizeAttr = Product.Attributes.GetByName('Boxsize')
+        BoxSize = BoxSizeAttr.SelectedValue.ValueCode if BoxSizeAttr and BoxSizeAttr.SelectedValue else '02'
+
+        # with helper methods
+        AttrHelper = AttributeHelper(Product)
+        Model = AttrHelper.valueCode( AttrHelper.attr("Model Number"))
+        BoxSize = AttrHelper.valueCode( AttrHelper.attr("Boxsize"), '02')
+    """
     def __init__(self, _product=None):
         if isinstance(_product, Scripting.IProduct):
             self.Product = _product
@@ -58,6 +76,12 @@ class AttributeHelper:
 
 
 class QuoteItemAttributeHelper:
+    """Helper for accessing quote item attributes.
+
+    Defaults and early returns allow writing more generic code,
+    without having to check every time for existing attributes, non empty values, etc.
+    """
+
     def __init__(self, _item=None):
         self.item = _item if isinstance(_item, Scripting.IQuoteItem) else None
 
