@@ -1,7 +1,8 @@
 import _functools
+
 # import functools is not allowed in CPQ
 # _functools is allowed, but doesn't contain wraps
-# below is copied from functools module
+# below 'wraps' definition is copied from functools module (Python implementation)
 
 WRAPPER_ASSIGNMENTS = ('__module__', '__name__', '__qualname__', '__doc__',
                        '__annotations__')
@@ -50,4 +51,15 @@ def wraps(wrapped,
     return _functools.partial(update_wrapper, wrapped=wrapped,
                    assigned=assigned, updated=updated)
 
-
+def flattenArgs(_func):
+    """ Decorator to flatten args to make it the same as multiple args
+        - option 1: _func(arg1, arg2, arg3)
+        - option 2: _func(arg1, (arg2, arg3))
+    """
+    @wraps(_func)
+    def wrapper(*args):
+        FlatArgs = []
+        for Arg in args:
+            FlatArgs.extend(Arg)
+        return _func(*FlatArgs)
+    return wrapper
