@@ -85,37 +85,6 @@ class QuoteItemAttributeHelper:
     def valueCodeByAttrCode(self, _code, _default=""):
         return self.valueCode(self.attrByCode(_code), _default)
 
-    def hasConfigurationOption(self, _configurationOption):
-        """Check if the configuration option matches selected attributes.
-
-        Args:
-            _configurationOption (str): formatted AttributeSystemId=ValueCode1;ValueCode2
-        """
-        if not self.item or len(list(self.item.SelectedAttributes)) == 0:
-            return False
-
-        Parts = _configurationOption.split("=")
-        AttributeSystemId = Parts[0]
-        AttributeValueCodes = Parts[1].split(";")
-
-        AttrCode = attrCodeBySystemId(AttributeSystemId)
-        if not AttrCode:
-            return False
-        ValueCode = self.valueCodeByAttrCode(AttrCode)
-        return ValueCode in AttributeValueCodes
-
-    def hasConfigurationOptions(self, _configurationOptions):
-        # type: (str) -> bool
-        """Determine if the quote item has all provided configuration options.
-
-        Format: AttrSysId=val1;val2&NextAttrSysId=val3;val4
-        """
-        if not self.item or len(list(self.item.SelectedAttributes)) == 0:
-            return False
-        return all(self.hasConfigurationOption(Option)
-                   for Option in _configurationOptions.split("&"))
-
-
 def attrCodeBySystemId(_attrSystemId):
     # type: (str) -> str | None
     Query = ("SELECT TOP 1 STANDARD_ATTRIBUTE_CODE "
